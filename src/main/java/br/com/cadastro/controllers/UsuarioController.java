@@ -59,7 +59,7 @@ public class UsuarioController implements Serializable {
 	public ResponseEntity<UsuarioDTO> save(@Valid @RequestBody UsuarioForm usuarioForm) {
 		UsuarioDTO usuarioDTO = null;
 		if (Objects.isNull(usuarioForm.getId())) {
-			System.out.println(usuarioForm.getPerfil());
+
 			usuarioDTO = usuarioService.save(usuarioForm);
 		} else {
 			usuarioDTO = usuarioService.update(usuarioForm.getId(), usuarioForm);

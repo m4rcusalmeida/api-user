@@ -39,9 +39,9 @@ public class Usuario implements Serializable {
 	@NotBlank(message = "campo obrigatório!")
 	private String nome;
 
-	@NotBlank
+	@Column(unique = true, nullable = false)
 	private String email;
-	@NotBlank(message = "campo obrigatório!")
+	@Column(nullable = false)
 	private String senha;
 	private String endereco;
 	private String telefone;
