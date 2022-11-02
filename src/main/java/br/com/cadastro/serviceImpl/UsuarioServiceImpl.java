@@ -5,16 +5,13 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import br.com.cadastro.dto.UsuarioDTO;
 import br.com.cadastro.form.UsuarioForm;
-import br.com.cadastro.models.Perfil;
 import br.com.cadastro.models.Usuario;
 import br.com.cadastro.repository.UsuarioRepository;
 import br.com.cadastro.service.UsuarioService;
-import br.com.cadastro.utils.SenhaUtils;
 
 @Service
 public class UsuarioServiceImpl implements UsuarioService {
@@ -26,9 +23,6 @@ public class UsuarioServiceImpl implements UsuarioService {
 	public UsuarioDTO save(UsuarioForm usuarioForm) {
 		Usuario user = Usuario.convert(usuarioForm);
 		user.setId(null);
-		String senhaHash = SenhaUtils.encode(user.getSenha());
-		user.setSenha(SenhaUtils.encode(senhaHash));
-
 		return UsuarioDTO.convert(usuarioRepo.save(user));
 	}
 

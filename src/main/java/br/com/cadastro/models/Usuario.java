@@ -12,8 +12,6 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
 
-import org.hibernate.validator.constraints.UniqueElements;
-
 import br.com.cadastro.form.UsuarioForm;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
