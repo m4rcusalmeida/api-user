@@ -1,30 +1,21 @@
 package br.com.cadastro.security;
 
 import java.util.Collection;
+import java.util.Collections;
 
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import br.com.cadastro.models.Perfil;
 import br.com.cadastro.models.Usuario;
+import lombok.AllArgsConstructor;
 
+@AllArgsConstructor
 public class UserDetailsImpl implements UserDetails {
-
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = -6712939354789211453L;
 	private Usuario usuario;
-
-	public UserDetailsImpl(Usuario usuario) {
-		this.usuario = usuario;
-	}
 
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
-		Perfil perfil = usuario.getPerfil();
-		return AuthorityUtils.createAuthorityList(perfil.toString());
+		return Collections.emptyList();
 	}
 
 	@Override
@@ -55,6 +46,10 @@ public class UserDetailsImpl implements UserDetails {
 	@Override
 	public boolean isEnabled() {
 		return true;
+	}
+
+	public String getNome() {
+		return usuario.getNome();
 	}
 
 }

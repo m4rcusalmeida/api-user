@@ -1,7 +1,13 @@
 package br.com.cadastro.form;
 
-public class LoginForm {
+import java.io.Serializable;
 
+public class LoginForm implements Serializable{
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 8329343528379143971L;
 	private String email;
 	private String senha;
 
