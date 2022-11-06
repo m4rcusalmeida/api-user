@@ -1,6 +1,7 @@
 package br.com.cadastro.dto;
 
 import java.io.Serializable;
+import java.util.List;
 
 import org.springframework.data.domain.Page;
 
@@ -26,11 +27,11 @@ public class UsuarioDTO implements Serializable {
 	private String email;
 	private String endereco;
 	private String telefone;
-	private Perfil perfil;
+	private List<Perfil> perfis;
 
 	public static UsuarioDTO convert(Usuario usuario) {
 		return new UsuarioDTO(usuario.getId(), usuario.getNome(), usuario.getEmail(), usuario.getEndereco(),
-				usuario.getTelefone(), usuario.getPerfil());
+				usuario.getTelefone(), usuario.getPerfis());
 	}
 
 	public static Page<UsuarioDTO> convert(Page<Usuario> usuarios) {

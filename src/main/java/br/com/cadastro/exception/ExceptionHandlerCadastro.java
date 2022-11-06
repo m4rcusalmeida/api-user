@@ -7,6 +7,7 @@ import java.util.NoSuchElementException;
 
 import javax.validation.ConstraintViolationException;
 
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -61,6 +62,12 @@ public class ExceptionHandlerCadastro implements Serializable {
 		});
 
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errs);
+	}
+
+	@ExceptionHandler(DataIntegrityViolationException.class)
+	public ResponseEntity<RespostaPadrao> dataIntegrityViolationException(DataIntegrityViolationException e) {
+		RespostaPadrao rp = new RespostaPadrao("email ja existe na base de dados");
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(rp);
 	}
 
 }

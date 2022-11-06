@@ -1,5 +1,7 @@
 package br.com.cadastro.serviceImpl;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,7 +11,9 @@ import org.springframework.stereotype.Service;
 
 import br.com.cadastro.dto.UsuarioDTO;
 import br.com.cadastro.form.UsuarioForm;
+import br.com.cadastro.models.Perfil;
 import br.com.cadastro.models.Usuario;
+import br.com.cadastro.repository.PerfilRepository;
 import br.com.cadastro.repository.UsuarioRepository;
 import br.com.cadastro.service.UsuarioService;
 
@@ -18,11 +22,25 @@ public class UsuarioServiceImpl implements UsuarioService {
 
 	@Autowired
 	private UsuarioRepository usuarioRepo;
+	@Autowired
+	private PerfilRepository perfilRepo;
 
 	@Override
 	public UsuarioDTO save(UsuarioForm usuarioForm) {
 		Usuario user = Usuario.convert(usuarioForm);
 		user.setId(null);
+		List<Perfil> perfis = new ArrayList<Perfil>();
+		if (usuarioForm.getPerfis() != null) {
+			for (Perfil p : usuarioForm.getPerfis()) {
+				Optional<Perfil> perfil = perfilRepo.findByNomeIgnoreCase(p.getNome());
+				if (perfil.isPresent()) {
+					perfis.add(perfil.get());
+				}
+			}
+		}
+		user.setPerfis(perfis);
+		// user.getPerfis().forEach(p -> System.out.println(p.getNome()));
+
 		return UsuarioDTO.convert(usuarioRepo.save(user));
 	}
 
@@ -51,7 +69,7 @@ public class UsuarioServiceImpl implements UsuarioService {
 		optional.get().setSenha(usuarioForm.getSenha());
 		optional.get().setEndereco(usuarioForm.getEndereco());
 		optional.get().setTelefone(usuarioForm.getTelefone());
-		optional.get().setPerfil(usuarioForm.getPerfil());
+		optional.get().setPerfis(usuarioForm.getPerfis());
 		return UsuarioDTO.convert(usuarioRepo.save(optional.get()));
 	}
 

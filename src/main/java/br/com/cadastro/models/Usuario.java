@@ -1,14 +1,21 @@
 package br.com.cadastro.models;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
 
@@ -36,19 +43,41 @@ public class Usuario implements Serializable {
 	private Long id;
 	@NotBlank(message = "campo obrigatório!")
 	private String nome;
-
 	@Column(unique = true, nullable = false)
 	private String email;
 	@Column(nullable = false)
 	private String senha;
 	private String endereco;
 	private String telefone;
-	@Enumerated(EnumType.STRING)
-	private Perfil perfil;
+	@ManyToMany(fetch = FetchType.EAGER, cascade = { CascadeType.MERGE, CascadeType.PERSIST, CascadeType.DETACH })
+	@JoinTable(name = "usuario_perfil", joinColumns = { @JoinColumn(name = "usuario_id") }, inverseJoinColumns = {
+			@JoinColumn(name = "perfil_id") })
+	private List<Perfil> perfis;
 
 	public static Usuario convert(UsuarioForm userForm) {
-		return new Usuario(userForm.getId(), userForm.getNome(), userForm.getEmail(), userForm.getSenha(),
-				userForm.getEndereco(), userForm.getTelefone(), userForm.getPerfil());
+		Usuario user = new Usuario();
+		user.setNome(userForm.getNome());
+		user.setEmail(userForm.getEmail());
+		user.setSenha(userForm.getSenha());
+		user.setEndereco(userForm.getEndereco());
+		user.setTelefone(userForm.getTelefone());
+		return user;
+	}
+
+	public void addPerfil(Perfil perfil) {
+		if (this.perfis == null) {
+			this.perfis = new ArrayList<Perfil>();
+		}
+		this.perfis.add(perfil);
+		perfil.getUsuarios().add(this);
+	}
+
+	public void removePerfil(Perfil perfil) {
+		if (this.perfis == null) {
+			this.perfis = new ArrayList<Perfil>();
+		}
+		this.perfis.remove(perfil);
+		perfil.getUsuarios().remove(this);
 	}
 
 }

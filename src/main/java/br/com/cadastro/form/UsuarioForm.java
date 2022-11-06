@@ -1,6 +1,7 @@
 package br.com.cadastro.form;
 
 import java.io.Serializable;
+import java.util.List;
 
 import br.com.cadastro.models.Perfil;
 import lombok.AllArgsConstructor;
@@ -22,6 +23,6 @@ public class UsuarioForm implements Serializable {
 	private String senha;
 	private String endereco;
 	private String telefone;
-	private Perfil perfil;
+	private List<Perfil> perfis;
 
 }
