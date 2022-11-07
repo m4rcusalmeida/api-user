@@ -2,6 +2,7 @@ package br.com.cadastro.controllers;
 
 import java.io.Serializable;
 import java.net.URI;
+import java.util.List;
 import java.util.Objects;
 
 import javax.validation.Valid;
@@ -13,7 +14,6 @@ import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -25,6 +25,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import br.com.cadastro.dto.PerfilDTO;
 import br.com.cadastro.dto.UsuarioDTO;
 import br.com.cadastro.form.UsuarioForm;
 import br.com.cadastro.service.UsuarioService;
@@ -55,6 +56,11 @@ public class UsuarioController implements Serializable {
 			return ResponseEntity.ok().body(usuarioService.findByNome(nome, pageable));
 		}
 		return ResponseEntity.ok().body(usuarioService.findAll(pageable));
+	}
+
+	@GetMapping("/{id}/perfil")
+	public ResponseEntity<List<PerfilDTO>> findByPerfil(@PathVariable Long id) {
+		return ResponseEntity.ok().body(usuarioService.findByPerfilUsuario(id));
 	}
 
 	@PostMapping

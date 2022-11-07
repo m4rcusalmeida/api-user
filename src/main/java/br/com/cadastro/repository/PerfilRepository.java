@@ -8,4 +8,6 @@ import br.com.cadastro.models.Perfil;
 
 public interface PerfilRepository extends JpaRepository<Perfil, Long> {
 	Optional<Perfil> findByNomeIgnoreCase(String nome);
+
+	Perfil findByUsuarios_Nome(String nomeCurso);
 }

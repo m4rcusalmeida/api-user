@@ -5,7 +5,6 @@ import java.util.List;
 
 import org.springframework.data.domain.Page;
 
-import br.com.cadastro.models.Perfil;
 import br.com.cadastro.models.Usuario;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -27,11 +26,11 @@ public class UsuarioDTO implements Serializable {
 	private String email;
 	private String endereco;
 	private String telefone;
-	private List<Perfil> perfis;
+	private List<PerfilDTO> perfis;
 
 	public static UsuarioDTO convert(Usuario usuario) {
 		return new UsuarioDTO(usuario.getId(), usuario.getNome(), usuario.getEmail(), usuario.getEndereco(),
-				usuario.getTelefone(), usuario.getPerfis());
+				usuario.getTelefone(), PerfilDTO.convert(usuario.getPerfis()));
 	}
 
 	public static Page<UsuarioDTO> convert(Page<Usuario> usuarios) {

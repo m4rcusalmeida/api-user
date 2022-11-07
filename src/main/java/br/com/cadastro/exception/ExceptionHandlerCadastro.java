@@ -26,7 +26,7 @@ public class ExceptionHandlerCadastro implements Serializable {
 
 	@ExceptionHandler(NoSuchElementException.class)
 	public ResponseEntity<RespostaPadrao> noSuchElementException(NoSuchElementException e) {
-		RespostaPadrao err = new RespostaPadrao("Objeto não encontrado");
+		RespostaPadrao err = new RespostaPadrao(e.getMessage());
 		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(err);
 	}
 

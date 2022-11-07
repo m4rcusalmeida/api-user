@@ -2,11 +2,8 @@ package br.com.cadastro.models;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -49,7 +46,7 @@ public class Usuario implements Serializable {
 	private String senha;
 	private String endereco;
 	private String telefone;
-	@ManyToMany(fetch = FetchType.EAGER, cascade = { CascadeType.MERGE, CascadeType.PERSIST, CascadeType.DETACH })
+	@ManyToMany(fetch = FetchType.EAGER)
 	@JoinTable(name = "usuario_perfil", joinColumns = { @JoinColumn(name = "usuario_id") }, inverseJoinColumns = {
 			@JoinColumn(name = "perfil_id") })
 	private List<Perfil> perfis;

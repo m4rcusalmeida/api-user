@@ -2,6 +2,7 @@ package br.com.cadastro.serviceImpl;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +10,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import br.com.cadastro.dto.PerfilDTO;
 import br.com.cadastro.dto.UsuarioDTO;
 import br.com.cadastro.form.UsuarioForm;
 import br.com.cadastro.models.Perfil;
@@ -31,12 +33,15 @@ public class UsuarioServiceImpl implements UsuarioService {
 		user.setId(null);
 		List<Perfil> perfis = new ArrayList<Perfil>();
 		if (usuarioForm.getPerfis() != null) {
-			for (Perfil p : usuarioForm.getPerfis()) {
+			usuarioForm.getPerfis().forEach(p -> {
 				Optional<Perfil> perfil = perfilRepo.findByNomeIgnoreCase(p.getNome());
 				if (perfil.isPresent()) {
 					perfis.add(perfil.get());
+				} else {
+					throw new NoSuchElementException(p.getNome() + " não é um perfil válido");
 				}
-			}
+
+			});
 		}
 		user.setPerfis(perfis);
 		// user.getPerfis().forEach(p -> System.out.println(p.getNome()));
@@ -46,12 +51,19 @@ public class UsuarioServiceImpl implements UsuarioService {
 
 	@Override
 	public UsuarioDTO findById(Long id) {
-		return UsuarioDTO.convert(usuarioRepo.findById(id).get());
+		return UsuarioDTO.convert(
+				usuarioRepo.findById(id).orElseThrow(() -> new NoSuchElementException("Objeto não encontrado!")));
 	}
 
 	@Override
 	public void delete(Long id) {
-
+//		Optional<Usuario> optional = usuarioRepo.findById(id);
+//		if (optional.isPresent()) {
+//			for (Perfil p : optional.get().getPerfis()) {
+//				Optional<Perfil> optional2 = perfilRepo.findByNomeIgnoreCase(p.getNome());
+//				optional.get().removePerfil(optional2.get());
+//			}
+//		}
 		usuarioRepo.deleteById(id);
 
 	}
@@ -76,6 +88,16 @@ public class UsuarioServiceImpl implements UsuarioService {
 	@Override
 	public Page<UsuarioDTO> findByNome(String nome, Pageable pageable) {
 		return UsuarioDTO.convert(usuarioRepo.findByNomeContainingIgnoreCase(nome, pageable));
+	}
+
+	@Override
+	public List<PerfilDTO> findByPerfilUsuario(Long id) {
+		Optional<Usuario> optional = usuarioRepo.findById(id);
+		List<Perfil> perfis = new ArrayList<Perfil>();
+		if (optional.isPresent()) {
+			perfis = optional.get().getPerfis();
+		}
+		return PerfilDTO.convert(perfis);
 	}
 
 }
