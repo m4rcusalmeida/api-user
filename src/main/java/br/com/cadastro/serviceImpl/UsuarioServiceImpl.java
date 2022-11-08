@@ -13,7 +13,9 @@ import org.springframework.stereotype.Service;
 import br.com.cadastro.dto.PerfilDTO;
 import br.com.cadastro.dto.UsuarioDTO;
 import br.com.cadastro.form.UsuarioForm;
+import br.com.cadastro.models.Endereco;
 import br.com.cadastro.models.Perfil;
+import br.com.cadastro.models.Telefone;
 import br.com.cadastro.models.Usuario;
 import br.com.cadastro.repository.PerfilRepository;
 import br.com.cadastro.repository.UsuarioRepository;
@@ -32,6 +34,8 @@ public class UsuarioServiceImpl implements UsuarioService {
 		Usuario user = Usuario.convert(usuarioForm);
 		user.setId(null);
 		List<Perfil> perfis = new ArrayList<Perfil>();
+		// List<Endereco> enderecos = Endereco.convert(usuarioForm.getEndereco());
+		// List<Telefone> telefones = Telefone.convert(usuarioForm.getTelefone());
 		if (usuarioForm.getPerfis() != null) {
 			usuarioForm.getPerfis().forEach(p -> {
 				Optional<Perfil> perfil = perfilRepo.findByNomeIgnoreCase(p.getNome());
@@ -57,15 +61,7 @@ public class UsuarioServiceImpl implements UsuarioService {
 
 	@Override
 	public void delete(Long id) {
-//		Optional<Usuario> optional = usuarioRepo.findById(id);
-//		if (optional.isPresent()) {
-//			for (Perfil p : optional.get().getPerfis()) {
-//				Optional<Perfil> optional2 = perfilRepo.findByNomeIgnoreCase(p.getNome());
-//				optional.get().removePerfil(optional2.get());
-//			}
-//		}
 		usuarioRepo.deleteById(id);
-
 	}
 
 	@Override
@@ -79,9 +75,9 @@ public class UsuarioServiceImpl implements UsuarioService {
 		optional.get().setNome(usuarioForm.getNome());
 		optional.get().setEmail(usuarioForm.getEmail());
 		optional.get().setSenha(usuarioForm.getSenha());
-		optional.get().setEndereco(usuarioForm.getEndereco());
-		optional.get().setTelefone(usuarioForm.getTelefone());
-		optional.get().setPerfis(usuarioForm.getPerfis());
+		optional.get().setEndereco(Endereco.convert(usuarioForm.getEndereco()));
+		optional.get().setTelefone(Telefone.convert(usuarioForm.getTelefone()));
+		optional.get().setPerfis(Perfil.convert(usuarioForm.getPerfis()));
 		return UsuarioDTO.convert(usuarioRepo.save(optional.get()));
 	}
 

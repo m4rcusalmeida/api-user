@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -13,6 +14,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
 
@@ -44,8 +46,12 @@ public class Usuario implements Serializable {
 	private String email;
 	@Column(nullable = false)
 	private String senha;
-	private String endereco;
-	private String telefone;
+	@OneToMany(cascade = CascadeType.ALL)
+	@JoinColumn(name = "usuario_id")
+	private List<Endereco> endereco;
+	@OneToMany(cascade = CascadeType.ALL)
+	@JoinColumn(name = "usuario_id")
+	private List<Telefone> telefone;
 	@ManyToMany(fetch = FetchType.EAGER)
 	@JoinTable(name = "usuario_perfil", joinColumns = { @JoinColumn(name = "usuario_id") }, inverseJoinColumns = {
 			@JoinColumn(name = "perfil_id") })
@@ -56,8 +62,8 @@ public class Usuario implements Serializable {
 		user.setNome(userForm.getNome());
 		user.setEmail(userForm.getEmail());
 		user.setSenha(userForm.getSenha());
-		user.setEndereco(userForm.getEndereco());
-		user.setTelefone(userForm.getTelefone());
+		user.setEndereco(Endereco.convert(userForm.getEndereco()));
+		user.setTelefone(Telefone.convert(userForm.getTelefone()));
 		return user;
 	}
 

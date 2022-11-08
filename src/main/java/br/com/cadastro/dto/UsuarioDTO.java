@@ -24,13 +24,14 @@ public class UsuarioDTO implements Serializable {
 	private Long id;
 	private String nome;
 	private String email;
-	private String endereco;
-	private String telefone;
+	private List<EnderecoDTO> endereco;
+	private List<TelefoneDTO> telefone;
 	private List<PerfilDTO> perfis;
 
 	public static UsuarioDTO convert(Usuario usuario) {
-		return new UsuarioDTO(usuario.getId(), usuario.getNome(), usuario.getEmail(), usuario.getEndereco(),
-				usuario.getTelefone(), PerfilDTO.convert(usuario.getPerfis()));
+		return new UsuarioDTO(usuario.getId(), usuario.getNome(), usuario.getEmail(),
+				EnderecoDTO.convert(usuario.getEndereco()), TelefoneDTO.convert(usuario.getTelefone()),
+				PerfilDTO.convert(usuario.getPerfis()));
 	}
 
 	public static Page<UsuarioDTO> convert(Page<Usuario> usuarios) {
