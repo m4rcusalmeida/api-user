@@ -21,6 +21,10 @@ public class TelefoneDTO implements Serializable {
 	private Long id;
 	private String numero;
 
+	public TelefoneDTO(String numero) {
+		this.numero = numero;
+	}
+
 	public static TelefoneDTO convert(Telefone tel) {
 		return new TelefoneDTO(tel.getId(), tel.getNumero());
 	}

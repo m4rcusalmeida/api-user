@@ -23,6 +23,10 @@ public class PerfilDTO implements Serializable {
 	private Long id;
 	private String nome;
 
+	public PerfilDTO(String nome) {
+		this.nome = nome;
+	}
+
 	public static PerfilDTO convert(Perfil p) {
 		return new PerfilDTO(p.getId(), p.getNome());
 	}

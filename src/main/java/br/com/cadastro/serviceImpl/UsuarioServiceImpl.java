@@ -34,8 +34,6 @@ public class UsuarioServiceImpl implements UsuarioService {
 		Usuario user = Usuario.convert(usuarioForm);
 		user.setId(null);
 		List<Perfil> perfis = new ArrayList<Perfil>();
-		// List<Endereco> enderecos = Endereco.convert(usuarioForm.getEndereco());
-		// List<Telefone> telefones = Telefone.convert(usuarioForm.getTelefone());
 		if (usuarioForm.getPerfis() != null) {
 			usuarioForm.getPerfis().forEach(p -> {
 				Optional<Perfil> perfil = perfilRepo.findByNomeIgnoreCase(p.getNome());
@@ -47,9 +45,8 @@ public class UsuarioServiceImpl implements UsuarioService {
 
 			});
 		}
-		user.setPerfis(perfis);
-		// user.getPerfis().forEach(p -> System.out.println(p.getNome()));
 
+		user.setPerfis(perfis);
 		return UsuarioDTO.convert(usuarioRepo.save(user));
 	}
 
@@ -77,7 +74,16 @@ public class UsuarioServiceImpl implements UsuarioService {
 		optional.get().setSenha(usuarioForm.getSenha());
 		optional.get().setEndereco(Endereco.convert(usuarioForm.getEndereco()));
 		optional.get().setTelefone(Telefone.convert(usuarioForm.getTelefone()));
-		optional.get().setPerfis(Perfil.convert(usuarioForm.getPerfis()));
+		List<Perfil> perfilUsuario = new ArrayList<Perfil>();
+		usuarioForm.getPerfis().forEach(p -> {
+			Optional<Perfil> optional2 = perfilRepo.findByNomeIgnoreCase(p.getNome());
+			perfilUsuario.add(
+					optional2.orElseThrow(() -> new NoSuchElementException(p.getNome() + " não é um perfil válido")));
+		});
+		if (perfilUsuario.size() <= perfilRepo.findAll().size()) {
+			optional.get().setPerfis(perfilUsuario);
+
+		}
 		return UsuarioDTO.convert(usuarioRepo.save(optional.get()));
 	}
 

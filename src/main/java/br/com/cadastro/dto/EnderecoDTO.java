@@ -26,6 +26,15 @@ public class EnderecoDTO implements Serializable {
 	private String cidade;
 	private String estado;
 
+	public EnderecoDTO(String rua, String numero, String bairro, String complemento, String cidade, String estado) {
+		this.rua = rua;
+		this.numero = numero;
+		this.bairro = bairro;
+		this.complemento = complemento;
+		this.cidade = cidade;
+		this.estado = estado;
+	}
+
 	public static EnderecoDTO convert(Endereco end) {
 		return new EnderecoDTO(end.getId(), end.getRua(), end.getNumero(), end.getBairro(), end.getComplemento(),
 				end.getCidade(), end.getEstado());
