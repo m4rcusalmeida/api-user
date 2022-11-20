@@ -7,6 +7,7 @@ import java.util.Objects;
 
 import javax.validation.Valid;
 
+import br.com.cadastro.serviceImpl.UsuarioServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -43,7 +44,7 @@ public class UsuarioController implements Serializable {
 	private static final long serialVersionUID = 1111465893422640414L;
 
 	@Autowired
-	private UsuarioService usuarioService;
+	private UsuarioServiceImpl usuarioService;
 
 	@GetMapping("/{id}")
 	public ResponseEntity<UsuarioDTO> findById(@PathVariable Long id) {

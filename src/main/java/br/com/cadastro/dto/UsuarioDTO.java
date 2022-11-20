@@ -1,8 +1,11 @@
 package br.com.cadastro.dto;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
+import br.com.cadastro.models.Endereco;
+import br.com.cadastro.models.Telefone;
 import org.springframework.data.domain.Page;
 
 import br.com.cadastro.models.Usuario;
@@ -29,8 +32,18 @@ public class UsuarioDTO implements Serializable {
 	private List<PerfilDTO> perfis;
 
 	public static UsuarioDTO convert(Usuario usuario) {
+		List<Endereco> listaEnderecos = new ArrayList<Endereco>();
+		if(usuario.getEndereco() != null){
+			listaEnderecos = usuario.getEndereco();
+		}
+
+		List<Telefone> listaTelefones = new ArrayList<>();
+		if(usuario.getTelefone() != null){
+			listaTelefones = usuario.getTelefone();
+		}
+
 		return new UsuarioDTO(usuario.getId(), usuario.getNome(), usuario.getEmail(),
-				EnderecoDTO.convert(usuario.getEndereco()), TelefoneDTO.convert(usuario.getTelefone()),
+				EnderecoDTO.convert(listaEnderecos), TelefoneDTO.convert(listaTelefones),
 				PerfilDTO.convert(usuario.getPerfis()));
 	}
 

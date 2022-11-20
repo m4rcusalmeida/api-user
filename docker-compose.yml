@@ -1,0 +1,26 @@
+version: '3.1'
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    links:
+      - postgresql
+    depends_on:
+      - postgresql
+    ports:
+      - 8080:8080
+  postgresql:
+    image: postgres:14
+    # volumes:
+    #     - ~/volumes/radius-taas/radius-taas/postgresql/:/var/lib/postgresql/data/
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=cadastro
+      - POSTGRES_HOST_AUTH_METHOD=trust
+    ports:
+      - 5432:5432
+
+
+
