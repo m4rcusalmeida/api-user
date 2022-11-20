@@ -17,7 +17,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -28,6 +27,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import br.com.cadastro.dto.PerfilDTO;
+import br.com.cadastro.dto.TelefoneDTO;
 import br.com.cadastro.dto.UsuarioDTO;
 import br.com.cadastro.form.UsuarioForm;
 import br.com.cadastro.service.UsuarioService;
@@ -76,8 +76,7 @@ public class UsuarioController implements Serializable {
 	@PutMapping("/{id}")
 	public ResponseEntity<UsuarioDTO> update(@PathVariable Long id, @RequestBody UsuarioForm usuarioForm) {
 		UsuarioDTO usuarioDTO = usuarioService.update(id, usuarioForm);
-		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(usuarioDTO.getId())
-				.toUri();
+		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().buildAndExpand(usuarioDTO.getId()).toUri();
 		return ResponseEntity.created(uri).body(usuarioDTO);
 	}
 

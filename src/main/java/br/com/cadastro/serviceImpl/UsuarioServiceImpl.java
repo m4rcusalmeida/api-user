@@ -11,12 +11,14 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import br.com.cadastro.dto.PerfilDTO;
+import br.com.cadastro.dto.TelefoneDTO;
 import br.com.cadastro.dto.UsuarioDTO;
 import br.com.cadastro.form.UsuarioForm;
 import br.com.cadastro.models.Endereco;
 import br.com.cadastro.models.Perfil;
 import br.com.cadastro.models.Telefone;
 import br.com.cadastro.models.Usuario;
+import br.com.cadastro.repository.EnderecoRepository;
 import br.com.cadastro.repository.PerfilRepository;
 import br.com.cadastro.repository.UsuarioRepository;
 import br.com.cadastro.service.UsuarioService;
@@ -28,6 +30,8 @@ public class UsuarioServiceImpl implements UsuarioService {
 	private UsuarioRepository usuarioRepo;
 	@Autowired
 	private PerfilRepository perfilRepo;
+	@Autowired
+	private EnderecoRepository enderecoRepo;
 
 	@Override
 	public UsuarioDTO save(UsuarioForm usuarioForm) {
@@ -52,8 +56,8 @@ public class UsuarioServiceImpl implements UsuarioService {
 
 	@Override
 	public UsuarioDTO findById(Long id) {
-		return UsuarioDTO.convert(
-				usuarioRepo.findById(id).orElseThrow(() -> new NoSuchElementException("Objeto não encontrado!")));
+		return UsuarioDTO.convert(usuarioRepo.findById(id)
+				.orElseThrow(() -> new NoSuchElementException("Não existe usuário com o ID! " + id)));
 	}
 
 	@Override
@@ -68,12 +72,43 @@ public class UsuarioServiceImpl implements UsuarioService {
 
 	@Override
 	public UsuarioDTO update(Long id, UsuarioForm usuarioForm) {
-		Optional<Usuario> optional = usuarioRepo.findById(id);
-		optional.get().setNome(usuarioForm.getNome());
-		optional.get().setEmail(usuarioForm.getEmail());
-		optional.get().setSenha(usuarioForm.getSenha());
-		optional.get().setEndereco(Endereco.convert(usuarioForm.getEndereco()));
-		optional.get().setTelefone(Telefone.convert(usuarioForm.getTelefone()));
+		Usuario optional = usuarioRepo.findById(id)
+				.orElseThrow(() -> new NoSuchElementException("Não existe usuário com o ID! " + id));
+		optional.setNome(usuarioForm.getNome());
+		optional.setEmail(usuarioForm.getEmail());
+		optional.setSenha(usuarioForm.getSenha());
+		List<Endereco> enderecos = new ArrayList<Endereco>();
+		if (usuarioForm.getEndereco() != null && usuarioForm.getEndereco().size() <= 2) {
+			if (optional.getEndereco().size() <= 2) {
+				usuarioForm.getEndereco().forEach(endereco -> {
+					if (endereco.getId() != null) {
+						Endereco end = enderecoRepo.findById(endereco.getId()).orElseThrow(
+								() -> new NoSuchElementException("ID informado não existe na base de dados"));
+						end.setRua(endereco.getRua());
+						end.setNumero(endereco.getNumero());
+						end.setBairro(endereco.getBairro());
+						end.setComplemento(endereco.getComplemento());
+						end.setCidade(endereco.getCidade());
+						end.setEstado(endereco.getEstado());
+						enderecos.add(end);
+					} else {
+						Endereco e = new Endereco();
+						e.setRua(endereco.getRua());
+						e.setNumero(endereco.getNumero());
+						e.setBairro(endereco.getBairro());
+						e.setComplemento(endereco.getComplemento());
+						e.setCidade(endereco.getCidade());
+						e.setEstado(endereco.getEstado());
+						enderecos.add(e);
+					}
+
+				});
+				optional.setEndereco(enderecos);
+			}
+		} else {
+			throw new NoSuchElementException("Só é permitido cadastrar 2 endereços por usuário");
+		}
+		optional.setTelefone(Telefone.convert(usuarioForm.getTelefone()));
 		List<Perfil> perfilUsuario = new ArrayList<Perfil>();
 		usuarioForm.getPerfis().forEach(p -> {
 			Optional<Perfil> optional2 = perfilRepo.findByNomeIgnoreCase(p.getNome());
@@ -81,10 +116,10 @@ public class UsuarioServiceImpl implements UsuarioService {
 					optional2.orElseThrow(() -> new NoSuchElementException(p.getNome() + " não é um perfil válido")));
 		});
 		if (perfilUsuario.size() <= perfilRepo.findAll().size()) {
-			optional.get().setPerfis(perfilUsuario);
+			optional.setPerfis(perfilUsuario);
 
 		}
-		return UsuarioDTO.convert(usuarioRepo.save(optional.get()));
+		return UsuarioDTO.convert(usuarioRepo.save(optional));
 	}
 
 	@Override
